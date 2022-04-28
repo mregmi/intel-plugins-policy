@@ -2,13 +2,17 @@ policy_module(container_sr, 1.0)
 
 gen_require(`
         type container_file_t;
-        type device_t;
+        type kubernetes_file_t;
+        type device_node;
 ')
 
-container_domain_template(container_sr)
+container_domain_template(container_device)
+container_domain_template(container_device_init)
 
+#============= container_device_t ==============
+allow container_device_t container_runtime_t:unix_stream_socket connectto;
+allow container_device_t device_node:chr_file rw_chr_file_perms;
 
-#============= container_sr_t ==============
-allow container_sr_t container_runtime_t:unix_stream_socket connectto;
-allow container_sr_t device_t:chr_file getattr;
+#============= container_device_init_t =============
+allow container_device_init_t kubernetes_file_t:file { read getattr write };
 
